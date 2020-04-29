@@ -3,7 +3,7 @@
     <div id="tank" :style="tankStyle">
     </div>
 
-    <span v-for="bullet in bullets" v-bind:id="bullet.id" :style="{ bottom: bullet.bottom + 'px', right: bullet.right + 'px' }" class="bullet">
+    <span v-for="bullet in bullets" v-bind:id="bullet.id" ref="bullets" :key="bullet.id" :style="{ bottom: bullet.bottom + 'px', right: bullet.right + 'px' }" class="bullet">
     </span>
   </div>
 </template>
@@ -36,6 +36,7 @@
         this.bullets.push({
           bottom: TANK_HEIGHT,
           right: (this.tankRight + TANK_WIDTH / 2),
+          hit: 0,
           id: this.bulletsCounter
         });
         var lastBullet = this.bullets[this.bullets.length - 1]
@@ -43,18 +44,24 @@
       },
       fireBullet: function(bullet) {
         bullet.bottom += BULLET_MOVEMENT;
-
-        // move bullet
         var vm = this;
-        if (bullet.bottom < window.innerHeight) {
+        if (bullet.bottom < window.innerHeight && bullet.hit === 0) {
+          // global event of an attack.
+          // All the enemies will catch this event to check a collison
+          var el = this.$refs.bullets[bullet.id];
+          console.log(el);
+          vm.$root.$emit('attack', 20, el);
+          // move bullet
           setTimeout(function () {
             vm.fireBullet(bullet);
           }, 1000 - BULLET_SPEED);
         } else {
-          // Remove bullet from list
-          let bulletIndex = this.bullets.map(b => b.id).indexOf(bullet.id);
-          this.bullets.splice(bulletIndex, 1);
+          this.removeBullet(bullet);
         }
+      },
+      removeBullet: function(b) {
+        let bulletIndex = this.bullets.map(b => b.id).indexOf(b.id);
+        this.bullets.splice(bulletIndex, 1);
       }
     },
     computed: {

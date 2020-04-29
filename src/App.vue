@@ -1,15 +1,18 @@
 <template>
   <div id="app">
     <app-tank></app-tank>
+    <app-bastard></app-bastard>
   </div>
 </template>
 
 <script>
   import Tank from './components/Tank.vue';
+  import Bastard from './components/Bastard.vue';
 
   export default {
     components: {
-      'app-tank': Tank
+      'app-tank': Tank,
+      'app-bastard': Bastard
     }
   };
 </script>
