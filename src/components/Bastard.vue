@@ -1,34 +1,53 @@
 <template>
-  <div :style="damage" ref="bastard_el">
-    
+  <div :style="style" v-if="life > 0">
+
   </div>
 </template>
 
 <script>
+  import { eventBus } from '../main';
+
+  var WIDTH = 50
+  var HEIGHT = 50
+
   export default {
     name: 'bastard',
     data: function() {
       return {
-        life: 100
+        life: 100,
+        right: eventBus.enemyPositionX(WIDTH),
+        top: 10,
+        width: WIDTH,
+        height: HEIGHT
       };
     },
-    mounted: function() {
+    created() {
       var vm = this;
-      this.$root.$on('attack', function(damage, fireEl) {
-        console.log(fireEl);
-        var collison = doElsCollide(vm.$refs.bastard_el, fireEl);
-        if (collison === true) {
-          vm.life -= damage;
-          fireEl.hit = 1;
+      eventBus.$on('attack', (damage, fireEl) => {
+        if (this.life > 0) {
+          var collison = eventBus.doElsCollide(this, fireEl);
+          if (collison === true) {
+            console.log('hit');
+            vm.life -= damage;
+            fireEl.hit = 1;
+          }
         }
       });
     },
     computed: {
-      damage: function() {
-        if (this.life <= 70) {
-          return { backgroundColor: 'yellow' }
-        } else {
-          return { backgroundColor: 'black' }
+      style: function() {
+        var backgroundColor = 'black'
+        if (this.life <= 30) {
+          backgroundColor = 'red'
+        } else if (this.life <= 70) {
+          backgroundColor = 'yellow'
+        }
+        return {
+          backgroundColor: backgroundColor,
+          right: this.right + 'px',
+          top: this.top + 'px',
+          height: HEIGHT + 'px',
+          width: WIDTH + 'px'
         }
       }
     }
@@ -37,9 +56,6 @@
 
 <style scoped>
   div {
-    width: 50px;
-    height: 50px;
     position: fixed;
-    top: 10px;
   }
 </style>

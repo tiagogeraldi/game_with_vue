@@ -3,17 +3,19 @@
     <div id="tank" :style="tankStyle">
     </div>
 
-    <span v-for="bullet in bullets" v-bind:id="bullet.id" ref="bullets" :key="bullet.id" :style="{ bottom: bullet.bottom + 'px', right: bullet.right + 'px' }" class="bullet">
+    <span v-for="bullet in bullets" v-bind:id="bullet.id" :style="{ bottom: bullet.bottom + 'px', right: bullet.right + 'px' }" class="bullet">
     </span>
   </div>
 </template>
 
 <script>
+  import { eventBus } from '../main';
+
   var TANK_MOVEMENT = 10;
   var TANK_WIDTH = 50;
   var TANK_HEIGHT = 50;
   var BULLET_MOVEMENT = 1;
-  var BULLET_SPEED = 1500;
+  var BULLET_SPEED = 1900;
 
   export default {
     name: 'tank',
@@ -36,6 +38,8 @@
         this.bullets.push({
           bottom: TANK_HEIGHT,
           right: (this.tankRight + TANK_WIDTH / 2),
+          height: 2,
+          width: 2,
           hit: 0,
           id: this.bulletsCounter
         });
@@ -44,14 +48,14 @@
       },
       fireBullet: function(bullet) {
         bullet.bottom += BULLET_MOVEMENT;
-        var vm = this;
         if (bullet.bottom < window.innerHeight && bullet.hit === 0) {
           // global event of an attack.
           // All the enemies will catch this event to check a collison
-          var el = this.$refs.bullets[bullet.id];
-          console.log(el);
-          vm.$root.$emit('attack', 20, el);
+          // console.log(el);
+          eventBus.attack(20, bullet);
+
           // move bullet
+          var vm = this;
           setTimeout(function () {
             vm.fireBullet(bullet);
           }, 1000 - BULLET_SPEED);
