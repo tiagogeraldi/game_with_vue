@@ -1,5 +1,5 @@
 <template>
-  <div :style="style" v-if="life > 0">
+  <div :style="style" v-if="life > 0" id="bast">
 
   </div>
 </template>
@@ -15,7 +15,7 @@
     data: function() {
       return {
         life: 100,
-        right: eventBus.enemyPositionX(WIDTH),
+        left: eventBus.enemyPositionX(WIDTH),
         top: 10,
         width: WIDTH,
         height: HEIGHT
@@ -44,7 +44,7 @@
         }
         return {
           backgroundColor: backgroundColor,
-          right: this.right + 'px',
+          left: this.left + 'px',
           top: this.top + 'px',
           height: HEIGHT + 'px',
           width: WIDTH + 'px'

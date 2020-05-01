@@ -3,7 +3,7 @@
     <div id="tank" :style="tankStyle">
     </div>
 
-    <span v-for="bullet in bullets" v-bind:id="bullet.id" :style="{ bottom: bullet.bottom + 'px', right: bullet.right + 'px' }" class="bullet">
+    <span v-for="bullet in bullets" v-bind:id="bullet.id" :style="{ top: bullet.top + 'px', left: bullet.left + 'px' }" class="bullet">
     </span>
   </div>
 </template>
@@ -21,23 +21,23 @@
     name: 'tank',
     data: function() {
       return {
-        tankRight: (window.innerWidth / 2),
+        left: (window.innerWidth / 2),
         bullets: [],
         bulletsCounter: 0
       };
     },
     methods: {
       moveRight: function() {
-        this.tankRight -= TANK_MOVEMENT;
+        this.left += TANK_MOVEMENT;
       },
       moveLeft: function() {
-        this.tankRight += TANK_MOVEMENT;
+        this.left -= TANK_MOVEMENT;
       },
       shoot: function() {
         this.bulletsCounter++;
         this.bullets.push({
-          bottom: TANK_HEIGHT,
-          right: (this.tankRight + TANK_WIDTH / 2),
+          top: this.tankTop,
+          left: (this.left + TANK_WIDTH / 2),
           height: 2,
           width: 2,
           hit: 0,
@@ -47,11 +47,10 @@
         this.fireBullet(lastBullet);
       },
       fireBullet: function(bullet) {
-        bullet.bottom += BULLET_MOVEMENT;
-        if (bullet.bottom < window.innerHeight && bullet.hit === 0) {
+        bullet.top -= BULLET_MOVEMENT;
+        if (bullet.top > 0 && bullet.hit === 0) {
           // global event of an attack.
           // All the enemies will catch this event to check a collison
-          // console.log(el);
           eventBus.attack(20, bullet);
 
           // move bullet
@@ -69,10 +68,16 @@
       }
     },
     computed: {
-      tankStyle: function() {
+      tankStyle() {
         return {
-          right: this.tankRight + 'px'
+          left: this.left + 'px',
+          top: this.tankTop + 'px',
+          height: TANK_HEIGHT + 'px',
+          width: TANK_WIDTH + 'px'
         }
+      },
+      tankTop() {
+        return (window.innerHeight - (TANK_HEIGHT + 10))
       }
     },
     created: function () {
@@ -93,10 +98,7 @@
 
 <style scoped>
   #tank {
-    width: 50px;
-    height: 50px;
     background-color: green;
-    bottom: 10px;
     position: fixed;
   }
 

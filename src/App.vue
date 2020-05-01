@@ -2,6 +2,8 @@
   <div id="app">
     <app-tank></app-tank>
     <app-bastard></app-bastard>
+    <app-bastard></app-bastard>
+    <app-bastard></app-bastard>
   </div>
 </template>
 
