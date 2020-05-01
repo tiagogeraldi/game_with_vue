@@ -2,8 +2,7 @@
   <div>
     <div id="tank" :style="tankStyle">
     </div>
-
-    <span v-for="bullet in bullets" v-bind:id="bullet.id" :style="{ top: bullet.top + 'px', left: bullet.left + 'px' }" class="bullet">
+    <span v-for="bullet in bullets" v-bind:id="bullet.id" class="bullet" :style="{ top: bullet.top + 'px', left: bullet.left + 'px' }">
     </span>
   </div>
 </template>
@@ -14,16 +13,20 @@
   var TANK_MOVEMENT = 10;
   var TANK_WIDTH = 50;
   var TANK_HEIGHT = 50;
-  var BULLET_MOVEMENT = 1;
-  var BULLET_SPEED = 1900;
+  var BULLET_SPEED = 999;
+  var BULLET_WIDTH = 3;
+  var BULLET_HEIGHT = 3;
 
   export default {
     name: 'tank',
     data: function() {
       return {
+        width: TANK_WIDTH,
+        height: TANK_HEIGHT,
+        top: (window.innerHeight - (TANK_HEIGHT + 10)),
         left: (window.innerWidth / 2),
         bullets: [],
-        bulletsCounter: 0
+        life: 100
       };
     },
     methods: {
@@ -34,12 +37,11 @@
         this.left -= TANK_MOVEMENT;
       },
       shoot: function() {
-        this.bulletsCounter++;
         this.bullets.push({
-          top: this.tankTop,
+          top: this.top,
           left: (this.left + TANK_WIDTH / 2),
-          height: 2,
-          width: 2,
+          height: BULLET_HEIGHT,
+          width: BULLET_WIDTH,
           hit: 0,
           id: this.bulletsCounter
         });
@@ -47,8 +49,8 @@
         this.fireBullet(lastBullet);
       },
       fireBullet: function(bullet) {
-        bullet.top -= BULLET_MOVEMENT;
-        if (bullet.top > 0 && bullet.hit === 0) {
+        bullet.top -= BULLET_HEIGHT;
+        if (bullet.top < window.innerHeight && bullet.hit === 0) {
           // global event of an attack.
           // All the enemies will catch this event to check a collison
           eventBus.attack(20, bullet);
@@ -71,16 +73,13 @@
       tankStyle() {
         return {
           left: this.left + 'px',
-          top: this.tankTop + 'px',
+          top: this.top + 'px',
           height: TANK_HEIGHT + 'px',
           width: TANK_WIDTH + 'px'
         }
-      },
-      tankTop() {
-        return (window.innerHeight - (TANK_HEIGHT + 10))
       }
     },
-    created: function () {
+    created() {
       var vm = this;
       // can't create this event with Vue, this is an event for the whole page.
       window.addEventListener('keydown', function(event) {
@@ -90,6 +89,18 @@
           vm.moveLeft();
         } else if (event.code == 'KeyA') {
           vm.shoot();
+        }
+      });
+
+      var vm = this;
+      eventBus.$on('counterAttack', (damage, fireEl) => {
+        if (this.life > 0) {
+          var collison = eventBus.doElsCollide(this, fireEl);
+          if (collison === true) {
+            console.log(vm.life)
+            vm.life -= damage;
+            fireEl.hit = 1;
+          }
         }
       });
     }
@@ -103,8 +114,8 @@
   }
 
   .bullet {
-    width: 2px;
-    height: 2px;
+    width: 3px;
+    height: 3px;
     background-color: black;
     position: fixed;
   }

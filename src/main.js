@@ -6,6 +6,9 @@ export const eventBus = new Vue({
     attack(damage, bullet) {
       this.$emit('attack', damage, bullet);
     },
+    counterAttack(damage, bullet) {
+      this.$emit('counterAttack', damage, bullet);
+    },
     doElsCollide(target, bullet) {
       target.offsetTop = target.top;
       target.offsetLeft = target.left;
