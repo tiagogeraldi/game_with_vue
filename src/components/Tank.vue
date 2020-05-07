@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div id="tank" :style="tankStyle">
+    <div id="tank" :style="tankStyle" v-if="life > 0">
     </div>
     <span v-for="bullet in bullets" v-bind:id="bullet.id" class="bullet" :style="{ top: bullet.top + 'px', left: bullet.left + 'px' }">
     </span>

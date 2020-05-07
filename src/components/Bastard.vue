@@ -10,22 +10,25 @@
 <script>
   import { eventBus } from '../main';
 
-  var WIDTH = 50
-  var HEIGHT = 50
-  var BULLET_SPEED = 990;
-  var BULLET_WIDTH = 4;
-  var BULLET_HEIGHT = 4;
-  var SHOOT_INTERVAL = 500;
+  export const CONF = Object.freeze({
+    WIDTH: 50,
+    HEIGHT: 50,
+    BULLET_SPEED: 990,
+    BULLET_WIDTH: 4,
+    BULLET_HEIGHT: 4,
+    SHOOT_INTERVAL: 900,
+    MOVE_INTERVAL: 500
+  })
 
   export default {
     name: 'bastard',
+    props: ['left'],
     data: function() {
       return {
         life: 100,
-        left: eventBus.enemyPositionX(WIDTH),
         top: 10,
-        width: WIDTH,
-        height: HEIGHT,
+        width: CONF.WIDTH,
+        height: CONF.HEIGHT,
         bullets: []
       };
     },
@@ -42,15 +45,16 @@
       });
 
       // Fire!!!
-      setTimeout(this.shoot, SHOOT_INTERVAL);
+      this.shoot()
+      this.move()
     },
     methods: {
       shoot() {
         this.bullets.push({
           top: this.top + this.height,
           left: (this.left + this.width / 2),
-          height: BULLET_HEIGHT,
-          width: BULLET_WIDTH,
+          height: CONF.BULLET_HEIGHT,
+          width: CONF.BULLET_WIDTH,
           hit: 0,
           id: this.bulletsCounter
         });
@@ -61,8 +65,8 @@
         }
       },
       fireBullet(bullet) {
-        bullet.top += BULLET_HEIGHT;
-        if (bullet.top > 0 && bullet.hit === 0) {
+        bullet.top += CONF.BULLET_HEIGHT;
+        if (this.life > 0 && bullet.top < window.innerHeight && bullet.hit === 0) {
           // global event of an attack.
           // Thank might catch this event
           eventBus.counterAttack(20, bullet);
@@ -71,7 +75,7 @@
           var vm = this;
           setTimeout(function () {
             vm.fireBullet(bullet);
-          }, 1000 - BULLET_SPEED);
+          }, 1000 - CONF.BULLET_SPEED);
         } else {
           this.removeBullet(bullet);
         }
@@ -79,6 +83,12 @@
       removeBullet: function(b) {
         let bulletIndex = this.bullets.map(b => b.id).indexOf(b.id);
         this.bullets.splice(bulletIndex, 1);
+      },
+      move() {
+        this.top += 10
+        if (this.life > 0 && (this.top + this.height) < window.innerHeight) {
+          setTimeout(this.move, CONF.MOVE_INTERVAL)
+        }
       }
     },
     computed: {
@@ -93,16 +103,16 @@
           backgroundColor: backgroundColor,
           left: this.left + 'px',
           top: this.top + 'px',
-          height: HEIGHT + 'px',
-          width: WIDTH + 'px'
+          height: CONF.HEIGHT + 'px',
+          width: CONF.WIDTH + 'px'
         }
       },
       bulletStyle: function(bullet) {
         return {
           top: bullet.top + 'px',
           left: bullet.left + 'px',
-          width: BULLET_WIDTH + 'px',
-          height: BULLET_HEIGHT + 'px'
+          width: CONF.BULLET_WIDTH + 'px',
+          height: CONF.BULLET_HEIGHT + 'px'
         }
       }
     }
