@@ -61,7 +61,7 @@
         var lastBullet = this.bullets[this.bullets.length - 1]
         this.fireBullet(lastBullet);
         if (this.life > 0) {
-          setTimeout(this.shoot, SHOOT_INTERVAL);
+          setTimeout(this.shoot, CONF.SHOOT_INTERVAL);
         }
       },
       fireBullet(bullet) {

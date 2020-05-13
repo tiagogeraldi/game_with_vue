@@ -9,21 +9,21 @@ export const eventBus = new Vue({
     counterAttack(damage, bullet) {
       this.$emit('counterAttack', damage, bullet);
     },
-    doElsCollide(target, bullet) {
-      target.offsetTop = target.top;
-      target.offsetLeft = target.left;
-      target.offsetBottom = target.offsetTop + target.height;
-      target.offsetRight = target.offsetLeft + target.width;
+    doElsCollide(el1, el2) {
+      el1.offsetTop = el1.top;
+      el1.offsetLeft = el1.left;
+      el1.offsetBottom = el1.offsetTop + el1.height;
+      el1.offsetRight = el1.offsetLeft + el1.width;
 
-      bullet.offsetTop = bullet.top + bullet.height;
-      bullet.offsetLeft = bullet.left + bullet.width;
-      bullet.offsetBottom = bullet.offsetTop + bullet.height;
-      bullet.offsetRight = bullet.offsetLeft + bullet.width;
-      
-      return !((target.offsetBottom < bullet.offsetTop) ||
-               (target.offsetTop > bullet.offsetBottom) ||
-               (target.offsetRight < bullet.offsetLeft) ||
-               (target.offsetLeft > bullet.offsetRight))
+      el2.offsetTop = el2.top + el2.height;
+      el2.offsetLeft = el2.left + el2.width;
+      el2.offsetBottom = el2.offsetTop + el2.height;
+      el2.offsetRight = el2.offsetLeft + el2.width;
+
+      return !((el1.offsetBottom < el2.offsetTop) ||
+               (el1.offsetTop > el2.offsetBottom) ||
+               (el1.offsetRight < el2.offsetLeft) ||
+               (el1.offsetLeft > el2.offsetRight))
     },
     enemyPositionX(enemyWidth) {
       return Math.floor(Math.random() * (window.innerWidth - enemyWidth - 1) ) + 1;
