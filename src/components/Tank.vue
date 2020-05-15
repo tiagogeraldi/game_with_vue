@@ -24,17 +24,21 @@
         width: TANK_WIDTH,
         height: TANK_HEIGHT,
         top: (window.innerHeight - (TANK_HEIGHT + 10)),
-        left: (window.innerWidth / 2),
+        left: (window.GAME_WIDTH / 2 + window.GAME_OFFSET - (TANK_WIDTH / 2)),
         bullets: [],
         life: 100
       };
     },
     methods: {
       moveRight: function() {
-        this.left += TANK_MOVEMENT;
+        if (this.left < window.GAME_OFFSET + window.GAME_WIDTH - TANK_WIDTH) {
+          this.left += TANK_MOVEMENT;
+        }
       },
       moveLeft: function() {
-        this.left -= TANK_MOVEMENT;
+        if (this.left > window.GAME_OFFSET) {
+          this.left -= TANK_MOVEMENT;
+        }
       },
       shoot: function() {
         this.bullets.push({
@@ -97,7 +101,6 @@
         if (this.life > 0) {
           var collison = eventBus.doElsCollide(this, fireEl);
           if (collison === true) {
-            console.log(vm.life)
             vm.life -= damage;
             fireEl.hit = 1;
           }

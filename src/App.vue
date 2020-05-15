@@ -1,5 +1,5 @@
 <template>
-  <div id="app" ref="container">
+  <div id="app" ref="container" :style="style">
     <app-tank></app-tank>
   </div>
 </template>
@@ -9,6 +9,10 @@ import Vue from 'vue'
 import Tank from './components/Tank.vue';
 import Bastard from './components/Bastard.vue';
 import { eventBus } from './main';
+
+
+window.GAME_WIDTH = 600;
+window.GAME_OFFSET = (window.innerWidth - window.GAME_WIDTH) / 2;
 
 export const CONF = Object.freeze({
   MAX_BASTARDS: 7,
@@ -58,6 +62,13 @@ export default {
         setTimeout(this.addBastard, CONF.BASTARDS_INTERVAL)
       }
     }
+  },
+  computed: {
+    style() {
+      return {
+        width: window.GAME_WIDTH + 'px'
+      }
+    }
   }
 };
 </script>
@@ -72,9 +83,8 @@ html, body {
 }
 
 #app {
-  width: 100%;
   height: 100%;
+  margin: 0 auto;
   background-color: grey;
-  border: 5px solid black;
 }
 </style>

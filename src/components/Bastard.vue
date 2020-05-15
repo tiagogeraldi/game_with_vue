@@ -88,6 +88,8 @@
         this.top += 10
         if (this.life > 0 && (this.top + this.height) < window.innerHeight) {
           setTimeout(this.move, CONF.MOVE_INTERVAL)
+        } else {
+          this.$destroy()
         }
       }
     },
@@ -115,6 +117,9 @@
           height: CONF.BULLET_HEIGHT + 'px'
         }
       }
+    },
+    beforeDestroy () {
+      this.$root.$el.parentNode.removeChild(this.$root.$el)
     }
   };
 </script>

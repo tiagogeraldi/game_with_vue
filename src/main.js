@@ -26,7 +26,9 @@ export const eventBus = new Vue({
                (el1.offsetLeft > el2.offsetRight))
     },
     enemyPositionX(enemyWidth) {
-      return Math.floor(Math.random() * (window.innerWidth - enemyWidth - 1) ) + 1;
+      var x = Math.floor(Math.random() *
+        (window.GAME_WIDTH - enemyWidth - 1) ) + 1;
+      return x + window.GAME_OFFSET;
     }
   }
 });
