@@ -1,12 +1,14 @@
 <template>
   <div id="app" ref="container" :style="style">
-    <app-tank></app-tank>
+    <app-life :life="life"></app-life>
+    <app-tank :life="life"></app-tank>
   </div>
 </template>
 
 <script>
 import Vue from 'vue'
 import Tank from './components/Tank.vue';
+import Life from './components/Life.vue';
 import Bastard from './components/Bastard.vue';
 import { eventBus } from './main';
 
@@ -24,14 +26,20 @@ export default {
     return {
       gameover: false,
       level: 1,
-      bastards: []
+      bastards: [],
+      life: 100
     }
   },
   components: {
     'app-tank': Tank,
+    'app-life': Life,
     'app-bastard': Bastard
   },
   created() {
+    eventBus.$on('lifeChanged', (new_life) => {
+      this.life = new_life
+    });
+
     this.addBastard()
   },
   methods: {

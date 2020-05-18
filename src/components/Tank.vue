@@ -19,6 +19,7 @@
 
   export default {
     name: 'tank',
+    props: ['life'],
     data: function() {
       return {
         width: TANK_WIDTH,
@@ -26,7 +27,6 @@
         top: (window.innerHeight - (TANK_HEIGHT + 10)),
         left: (window.GAME_WIDTH / 2 + window.GAME_OFFSET - (TANK_WIDTH / 2)),
         bullets: [],
-        life: 100
       };
     },
     methods: {
@@ -101,8 +101,8 @@
         if (this.life > 0) {
           var collison = eventBus.doElsCollide(this, fireEl);
           if (collison === true) {
-            vm.life -= damage;
             fireEl.hit = 1;
+            eventBus.lifeChanged(vm.life - damage);
           }
         }
       });
