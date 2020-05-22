@@ -15,7 +15,7 @@ export default {
       let color = 'green'
       if (this.life < 75 && this.life >= 50) {
         color = 'yellow'
-      } else if (this.life < 50 && this.life >= 25 ) {
+      } else if (this.life < 50 && this.life >= 25) {
         color = 'orange'
       } else if (this.life < 25) {
         color = 'red'

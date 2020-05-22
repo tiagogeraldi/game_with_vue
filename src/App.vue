@@ -1,7 +1,22 @@
 <template>
-  <div id="app" ref="container" :style="style">
-    <app-life :life="life"></app-life>
-    <app-tank :life="life"></app-tank>
+  <div>
+    <div v-if="status === 'playing'">
+      <div ref="container" :style="style">
+        <app-life :life="life"></app-life>
+        <app-tank :life="life"></app-tank>
+      </div>
+    </div>
+    <div v-else-if="status === 'not-started'">
+      <h3>Welcome!</h3>
+      <button type="button" @click="status = 'playing'">Start</button>
+    </div>
+    <div v-else-if="status === 'paused'">
+      <h3>Paused!</h3>
+    </div>
+    <div v-else-if="status === 'gameover'">
+      <h3>Game over!</h3>
+      <button type="button" @click="status = 'playing'">Restart</button>
+    </div>
   </div>
 </template>
 
@@ -24,7 +39,7 @@ export const CONF = Object.freeze({
 export default {
   data() {
     return {
-      gameover: false,
+      status: 'not-started',
       level: 1,
       bastards: [],
       life: 100
@@ -36,8 +51,26 @@ export default {
     'app-bastard': Bastard
   },
   created() {
+    let vm = this
+    window.addEventListener('keydown', function(event) {
+      if (event.code == 'KeyP') {
+        if (vm.status === 'paused') {
+          vm.status = 'playing'
+        } else {
+          vm.status = 'paused'
+        }
+      }
+    });
     eventBus.$on('lifeChanged', (new_life) => {
-      this.life = new_life
+      vm.life = new_life
+      if (vm.life <= 0) {
+        vm.bastards.forEach(function(bastard) {
+          bastard.$destroy()
+        });
+        vm.bastards = []
+        //vm.life = 100
+        vm.status = 'gameover'
+      }
     });
 
     this.addBastard()
@@ -74,7 +107,10 @@ export default {
   computed: {
     style() {
       return {
-        width: window.GAME_WIDTH + 'px'
+        width: window.GAME_WIDTH + 'px',
+        height: window.innerHeight + 'px',
+        margin: '0 auto',
+        backgroundColor: 'grey'
       }
     }
   }
@@ -88,11 +124,5 @@ html, body {
   height: 100%;
   margin: 0;
   overflow: hidden;
-}
-
-#app {
-  height: 100%;
-  margin: 0 auto;
-  background-color: grey;
 }
 </style>
