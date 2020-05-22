@@ -2,13 +2,14 @@
   <div>
     <div v-if="status === 'playing'">
       <div ref="container" :style="style">
-        <app-life :life="life"></app-life>
-        <app-tank :life="life"></app-tank>
+        <app-bastard-group :status="status" @statusChanged="status = $event"></app-bastard-group>
+        <app-life :life="life" :status="status" @statusChanged="status = $event"></app-life>
+        <app-tank :life="life" :status="status" @statusChanged="status = $event"></app-tank>
       </div>
     </div>
     <div v-else-if="status === 'not-started'">
       <h3>Welcome!</h3>
-      <button type="button" @click="status = 'playing'">Start</button>
+      <button type="button" @click="start()">Start</button>
     </div>
     <div v-else-if="status === 'paused'">
       <h3>Paused!</h3>
@@ -24,31 +25,25 @@
 import Vue from 'vue'
 import Tank from './components/Tank.vue';
 import Life from './components/Life.vue';
-import Bastard from './components/Bastard.vue';
+import BastardGroup from './components/BastardGroup.vue';
 import { eventBus } from './main';
 
 
 window.GAME_WIDTH = 600;
 window.GAME_OFFSET = (window.innerWidth - window.GAME_WIDTH) / 2;
 
-export const CONF = Object.freeze({
-  MAX_BASTARDS: 7,
-  BASTARDS_INTERVAL: 6000
-})
-
 export default {
   data() {
     return {
       status: 'not-started',
       level: 1,
-      bastards: [],
       life: 100
     }
   },
   components: {
     'app-tank': Tank,
     'app-life': Life,
-    'app-bastard': Bastard
+    'app-bastard-group': BastardGroup
   },
   created() {
     let vm = this
@@ -64,44 +59,14 @@ export default {
     eventBus.$on('lifeChanged', (new_life) => {
       vm.life = new_life
       if (vm.life <= 0) {
-        vm.bastards.forEach(function(bastard) {
-          bastard.$destroy()
-        });
-        vm.bastards = []
-        //vm.life = 100
         vm.status = 'gameover'
       }
     });
-
-    this.addBastard()
   },
   methods: {
-    addBastard() {
-      if (this.$refs.container) {
-        // Do not allow a new bastard overlay
-        // any existing bastard
-        var instance = null
-        var collide = false
-        do {
-          var ComponentClass = Vue.extend(Bastard)
-          var left = eventBus.enemyPositionX(50) // random position
-          instance = new ComponentClass({
-            propsData: { left: left }
-          });
-          instance.$mount()
-          collide = false
-          this.bastards.forEach(function(bastard) {
-            if (eventBus.doElsCollide(bastard, instance)) {
-              collide = true
-            }
-          })
-        } while (collide)
-        this.$refs.container.appendChild(instance.$el)
-        this.bastards.push(instance)
-      }
-      if (this.bastards.length < CONF.MAX_BASTARDS) {
-        setTimeout(this.addBastard, CONF.BASTARDS_INTERVAL)
-      }
+    start() {
+      this.life = 100
+      this.status = 'playing'
     }
   },
   computed: {
@@ -112,6 +77,11 @@ export default {
         margin: '0 auto',
         backgroundColor: 'grey'
       }
+    }
+  },
+  watch: {
+    status() {
+      this.$emit('statusChanged', this.status)
     }
   }
 };

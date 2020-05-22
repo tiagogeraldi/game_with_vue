@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div :style="style" v-if="life > 0">
+    <div :style="style" v-if="life > 0" class="bastard">
     </div>
     <span v-for="bullet in bullets" v-bind:id="bullet.id" class="bullet" :style="{ top: bullet.top + 'px', left: bullet.left + 'px' }">
     </span>
@@ -21,19 +21,21 @@
   })
 
   export default {
-    name: 'bastard',
-    props: ['left'],
+    props: ['status', 'bastards', 'id'],
     data: function() {
       return {
-        life: 100,
+        life: 0,
         top: 10,
+        left: 0,
         width: CONF.WIDTH,
         height: CONF.HEIGHT,
-        bullets: []
+        bullets: [],
+        ready: false
       };
     },
     created() {
       var vm = this;
+
       eventBus.$on('attack', (damage, fireEl) => {
         if (this.life > 0) {
           var collison = eventBus.doElsCollide(this, fireEl);
@@ -43,12 +45,31 @@
           }
         }
       });
-
+      this.findPosition()
       // Fire!!!
       this.shoot()
       this.move()
     },
     methods: {
+      findPosition() {
+        // Do not allow a new bastard overlay
+        // any existing bastard
+        let collide = false
+        do {
+          this.left = eventBus.enemyPositionX(50) // random position
+          collide = false
+          this.bastards.forEach((b) => {
+            if (b.id != this.id && eventBus.doElsCollide(b.obj, this)) {
+              collide = true
+            }
+          })
+        } while (collide)
+        this.life = 100 // ready to go
+        this.$emit('addBastard', this)
+      },
+      alive() {
+        return (this.status === 'playing' && this.life > 0)
+      },
       shoot() {
         this.bullets.push({
           top: this.top + this.height,
@@ -60,13 +81,14 @@
         });
         var lastBullet = this.bullets[this.bullets.length - 1]
         this.fireBullet(lastBullet);
-        if (this.life > 0) {
+        if (this.alive()) {
           setTimeout(this.shoot, CONF.SHOOT_INTERVAL);
         }
       },
       fireBullet(bullet) {
         bullet.top += CONF.BULLET_HEIGHT;
-        if (this.life > 0 && bullet.top < window.innerHeight && bullet.hit === 0) {
+        if (this.alive() && bullet.top < window.innerHeight && bullet.hit === 0) {
+          console.log(this.status)
           // global event of an attack.
           // Thank might catch this event
           eventBus.counterAttack(20, bullet);
@@ -86,7 +108,7 @@
       },
       move() {
         this.top += 10
-        if (this.life > 0 && (this.top + this.height) < window.innerHeight) {
+        if (this.alive() && (this.top + this.height) < window.innerHeight) {
           setTimeout(this.move, CONF.MOVE_INTERVAL)
         } else {
           this.$destroy()
@@ -117,9 +139,6 @@
           height: CONF.BULLET_HEIGHT + 'px'
         }
       }
-    },
-    beforeDestroy () {
-      this.$root.$el.parentNode.removeChild(this.$root.$el)
     }
   };
 </script>

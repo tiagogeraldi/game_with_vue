@@ -12,6 +12,9 @@ export const eventBus = new Vue({
     lifeChanged(life) {
       this.$emit('lifeChanged', life);
     },
+    addBastard(bastard) {
+      this.$emit('addBastard', bastard);
+    },
     doElsCollide(el1, el2) {
       el1.offsetTop = el1.top;
       el1.offsetLeft = el1.left;
