@@ -9,6 +9,8 @@
 
 <script>
   import { eventBus } from '../main';
+  import { mapGetters } from 'vuex';
+  import { mapMutations } from 'vuex';
 
   var TANK_MOVEMENT = 10;
   var TANK_WIDTH = 50;
@@ -19,7 +21,6 @@
 
   export default {
     name: 'tank',
-    props: ['life'],
     data: function() {
       return {
         width: TANK_WIDTH,
@@ -30,6 +31,9 @@
       };
     },
     methods: {
+      ...mapMutations([
+        'damage'
+      ]),
       moveRight: function() {
         if (this.left < window.GAME_OFFSET + window.GAME_WIDTH - TANK_WIDTH) {
           this.left += TANK_MOVEMENT;
@@ -60,9 +64,8 @@
           eventBus.attack(20, bullet);
 
           // move bullet
-          var vm = this;
-          setTimeout(function () {
-            vm.fireBullet(bullet);
+          setTimeout(() => {
+            this.fireBullet(bullet);
           }, 1000 - BULLET_SPEED);
         } else {
           this.removeBullet(bullet);
@@ -74,6 +77,9 @@
       }
     },
     computed: {
+      ...mapGetters([
+        'life', 'status'
+      ]),
       tankStyle() {
         return {
           left: this.left + 'px',
@@ -84,25 +90,23 @@
       }
     },
     created() {
-      var vm = this;
       // can't create this event with Vue, this is an event for the whole page.
-      window.addEventListener('keydown', function(event) {
+      window.addEventListener('keydown', (event) => {
         if (event.code == 'ArrowRight') {
-          vm.moveRight();
+          this.moveRight();
         } else if (event.code == 'ArrowLeft') {
-          vm.moveLeft();
+          this.moveLeft();
         } else if (event.code == 'KeyA') {
-          vm.shoot();
+          this.shoot();
         }
       });
 
-      var vm = this;
       eventBus.$on('counterAttack', (damage, fireEl) => {
         if (this.life > 0) {
           var collison = eventBus.doElsCollide(this, fireEl);
           if (collison === true) {
             fireEl.hit = 1;
-            eventBus.lifeChanged(vm.life - damage);
+            this.damage(damage);
           }
         }
       });

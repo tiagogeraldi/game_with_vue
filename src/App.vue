@@ -2,20 +2,20 @@
   <div>
     <div v-if="status === 'playing'">
       <div ref="container" :style="style">
-        <app-life :life="life"></app-life>
-        <app-tank :life="life"></app-tank>
+        <app-life></app-life>
+        <app-tank></app-tank>
       </div>
     </div>
     <div v-else-if="status === 'not-started'">
       <h3>Welcome!</h3>
-      <button type="button" @click="status = 'playing'">Start</button>
+      <button type="button" @click="playing()">Start</button>
     </div>
     <div v-else-if="status === 'paused'">
       <h3>Paused!</h3>
     </div>
     <div v-else-if="status === 'gameover'">
       <h3>Game over!</h3>
-      <button type="button" @click="status = 'playing'">Restart</button>
+      <button type="button" @click="playing()">Restart</button>
     </div>
   </div>
 </template>
@@ -26,6 +26,8 @@ import Tank from './components/Tank.vue';
 import Life from './components/Life.vue';
 import Bastard from './components/Bastard.vue';
 import { eventBus } from './main';
+import { mapGetters } from 'vuex';
+import { mapMutations } from 'vuex';
 
 
 window.GAME_WIDTH = 600;
@@ -39,10 +41,7 @@ export const CONF = Object.freeze({
 export default {
   data() {
     return {
-      status: 'not-started',
-      level: 1,
-      bastards: [],
-      life: 100
+      bastards: []
     }
   },
   components: {
@@ -51,33 +50,23 @@ export default {
     'app-bastard': Bastard
   },
   created() {
-    let vm = this
-    window.addEventListener('keydown', function(event) {
+    window.addEventListener('keydown', (event) => {
       if (event.code == 'KeyP') {
-        if (vm.status === 'paused') {
-          vm.status = 'playing'
+        if (this.status === 'paused') {
+          this.playing()
         } else {
-          vm.status = 'paused'
+          this.paused()
         }
       }
     });
-    eventBus.$on('lifeChanged', (new_life) => {
-      vm.life = new_life
-      if (vm.life <= 0) {
-        vm.bastards.forEach(function(bastard) {
-          bastard.$destroy()
-        });
-        vm.bastards = []
-        //vm.life = 100
-        vm.status = 'gameover'
-      }
-    });
-
     this.addBastard()
   },
   methods: {
+    ...mapMutations([
+      'gameover', 'playing', 'paused', 'damage'
+    ]),
     addBastard() {
-      if (this.$refs.container) {
+      if (this.$refs.container && this.isPlaying) {
         // Do not allow a new bastard overlay
         // any existing bastard
         var instance = null
@@ -105,6 +94,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'life', 'status', 'isPlaying'
+    ]),
     style() {
       return {
         width: window.GAME_WIDTH + 'px',

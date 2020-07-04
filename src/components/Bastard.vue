@@ -9,6 +9,7 @@
 
 <script>
   import { eventBus } from '../main';
+  import { mapGetters } from 'vuex';
 
   export const CONF = Object.freeze({
     WIDTH: 50,
@@ -49,6 +50,9 @@
       this.move()
     },
     methods: {
+      ...mapGetters([
+        'isPlaying'
+      ]),
       shoot() {
         this.bullets.push({
           top: this.top + this.height,
@@ -66,15 +70,14 @@
       },
       fireBullet(bullet) {
         bullet.top += CONF.BULLET_HEIGHT;
-        if (this.life > 0 && bullet.top < window.innerHeight && bullet.hit === 0) {
+        if (this.isPlaying && this.life > 0 && bullet.top < window.innerHeight && bullet.hit === 0) {
           // global event of an attack.
           // Thank might catch this event
           eventBus.counterAttack(20, bullet);
 
           // move bullet
-          var vm = this;
-          setTimeout(function () {
-            vm.fireBullet(bullet);
+          setTimeout(() => {
+            this.fireBullet(bullet);
           }, 1000 - CONF.BULLET_SPEED);
         } else {
           this.removeBullet(bullet);

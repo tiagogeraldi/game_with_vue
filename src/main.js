@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import { store } from './store/store.js'
 import App from './App.vue'
 
 export const eventBus = new Vue({
@@ -8,9 +9,6 @@ export const eventBus = new Vue({
     },
     counterAttack(damage, bullet) {
       this.$emit('counterAttack', damage, bullet);
-    },
-    lifeChanged(life) {
-      this.$emit('lifeChanged', life);
     },
     doElsCollide(el1, el2) {
       el1.offsetTop = el1.top;
@@ -38,5 +36,6 @@ export const eventBus = new Vue({
 
 new Vue({
   el: '#game',
+  store,
   render: h => h(App)
 });
