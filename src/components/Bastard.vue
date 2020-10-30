@@ -64,7 +64,7 @@
         });
         var lastBullet = this.bullets[this.bullets.length - 1]
         this.fireBullet(lastBullet);
-        if (this.life > 0) {
+        if (this.life > 0 && this.isPlaying) {
           setTimeout(this.shoot, CONF.SHOOT_INTERVAL);
         }
       },
@@ -89,7 +89,7 @@
       },
       move() {
         this.top += 10
-        if (this.life > 0 && (this.top + this.height) < window.innerHeight) {
+        if (this.isPlaying && this.life > 0 && (this.top + this.height) < window.innerHeight) {
           setTimeout(this.move, CONF.MOVE_INTERVAL)
         } else {
           this.$destroy()
@@ -122,7 +122,10 @@
       }
     },
     beforeDestroy () {
-      this.$root.$el.parentNode.removeChild(this.$root.$el)
+      let parent = this.$root.$el.parentNode
+      if (parent) {
+        parent.removeChild(this.$root.$el)
+      }
     }
   };
 </script>

@@ -39,11 +39,6 @@ export const CONF = Object.freeze({
 })
 
 export default {
-  data() {
-    return {
-      bastards: []
-    }
-  },
   components: {
     'app-tank': Tank,
     'app-life': Life,
@@ -63,7 +58,7 @@ export default {
   },
   methods: {
     ...mapMutations([
-      'gameover', 'playing', 'paused', 'damage'
+      'gameover', 'playing', 'paused', 'damage', 'pushBastard'
     ]),
     addBastard() {
       if (this.$refs.container && this.isPlaying) {
@@ -79,14 +74,14 @@ export default {
           });
           instance.$mount()
           collide = false
-          this.bastards.forEach(function(bastard) {
+          this.bastards.forEach(bastard => {
             if (eventBus.doElsCollide(bastard, instance)) {
               collide = true
             }
           })
         } while (collide)
         this.$refs.container.appendChild(instance.$el)
-        this.bastards.push(instance)
+        this.pushBastard(instance)
       }
       if (this.bastards.length < CONF.MAX_BASTARDS) {
         setTimeout(this.addBastard, CONF.BASTARDS_INTERVAL)
@@ -95,7 +90,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'life', 'status', 'isPlaying'
+      'life', 'status', 'isPlaying', 'bastards'
     ]),
     style() {
       return {

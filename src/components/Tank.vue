@@ -34,6 +34,9 @@
       ...mapMutations([
         'damage'
       ]),
+      ...mapGetters([
+        'isPlaying'
+      ]),
       moveRight: function() {
         if (this.left < window.GAME_OFFSET + window.GAME_WIDTH - TANK_WIDTH) {
           this.left += TANK_MOVEMENT;
@@ -58,7 +61,7 @@
       },
       fireBullet: function(bullet) {
         bullet.top -= BULLET_HEIGHT;
-        if (bullet.top < window.innerHeight && bullet.hit === 0) {
+        if (this.isPlaying && bullet.top < window.innerHeight && bullet.hit === 0) {
           // global event of an attack.
           // All the enemies will catch this event to check a collison
           eventBus.attack(20, bullet);
