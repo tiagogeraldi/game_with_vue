@@ -1,68 +1,68 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-Vue.use(Vuex)
+import Vue from "vue";
+import Vuex from "vuex";
+Vue.use(Vuex);
 
 export const store = new Vuex.Store({
   state: {
     life: 100,
-    status: 'not-started',
+    status: "not-started",
     level: 1,
     points: 0,
     bastards: [],
-    timeoutFunctions: []
+    timeoutFunctions: [],
   },
   getters: {
-    life: state => {
-      return state.life
+    life: (state) => {
+      return state.life;
     },
-    status: state => {
-      return state.status
+    status: (state) => {
+      return state.status;
     },
-    level: state => {
-      return state.level
+    level: (state) => {
+      return state.level;
     },
-    points: state => {
-      return state.points
+    points: (state) => {
+      return state.points;
     },
-    isPlaying: state => {
-      return state.status === 'playing'
+    isPlaying: (state) => {
+      return state.status === "playing";
     },
-    bastards: state => {
-      return state.bastards
-    }
+    bastards: (state) => {
+      return state.bastards;
+    },
   },
   mutations: {
-    gameover: state => {
-      state.status = 'gameover'
-      state.life = 100
-      state.bastards = []
+    gameover: (state) => {
+      state.status = "gameover";
+      state.life = 100;
+      state.bastards = [];
     },
-    playing: state => {
-      state.status = 'playing'
+    playing: (state) => {
+      state.status = "playing";
     },
-    paused: state => {
-      state.status = 'paused'
+    paused: (state) => {
+      state.status = "paused";
     },
     damage(state, amount) {
-      state.life -= amount
+      state.life -= amount;
       if (state.life <= 0) {
-        this.commit('gameover')
-        this.commit('clearTimeouts')
+        this.commit("gameover");
+        this.commit("clearTimeouts");
       }
     },
     pushBastard(state, bastard) {
-      state.bastards.push(bastard)
+      state.bastards.push(bastard);
     },
-    clearTimeouts: state => {
-      state.timeoutFunctions.forEach(id => {
-        while(id--) {
-          window.clearTimeout(id)
+    clearTimeouts: (state) => {
+      state.timeoutFunctions.forEach((id) => {
+        while (id--) {
+          window.clearTimeout(id);
         }
-      })
-      state.timeoutFunctions = []
+      });
+      state.timeoutFunctions = [];
     },
     pushTimeout(state, func) {
-      state.timeoutFunctions.push(func)
-    }
-  }
+      state.timeoutFunctions.push(func);
+    },
+  },
 });

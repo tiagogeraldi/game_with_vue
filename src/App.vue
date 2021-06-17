@@ -21,92 +21,87 @@
 </template>
 
 <script>
-import Vue from 'vue'
-import Tank from './components/Tank.vue';
-import Life from './components/Life.vue';
-import Bastard from './components/Bastard.vue';
-import { eventBus } from './main';
-import { mapGetters } from 'vuex';
-import { mapMutations } from 'vuex';
-
+import Vue from "vue";
+import Tank from "./components/Tank.vue";
+import Life from "./components/Life.vue";
+import Bastard from "./components/Bastard.vue";
+import { eventBus } from "./main";
+import { mapGetters } from "vuex";
+import { mapMutations } from "vuex";
 
 window.GAME_WIDTH = 600;
 window.GAME_OFFSET = (window.innerWidth - window.GAME_WIDTH) / 2;
 
 export const CONF = Object.freeze({
   MAX_BASTARDS: 7,
-  BASTARDS_INTERVAL: 6000
-})
+  BASTARDS_INTERVAL: 6000,
+});
 
 export default {
   components: {
-    'app-tank': Tank,
-    'app-life': Life,
-    'app-bastard': Bastard
+    "app-tank": Tank,
+    "app-life": Life,
+    "app-bastard": Bastard,
   },
   created() {
-    window.addEventListener('keydown', (event) => {
-      if (event.code == 'KeyP') {
-        if (this.status === 'paused') {
-          this.playing()
+    window.addEventListener("keydown", (event) => {
+      if (event.code == "KeyP") {
+        if (this.status === "paused") {
+          this.playing();
         } else {
-          this.paused()
+          this.paused();
         }
       }
     });
-    this.addBastard()
+    this.addBastard();
   },
   methods: {
-    ...mapMutations([
-      'gameover', 'playing', 'paused', 'damage', 'pushBastard'
-    ]),
+    ...mapMutations(["gameover", "playing", "paused", "damage", "pushBastard"]),
     addBastard() {
       if (this.$refs.container && this.isPlaying) {
         // Do not allow a new bastard overlay
         // any existing bastard
-        var instance = null
-        var collide = false
+        var instance = null;
+        var collide = false;
         do {
-          var ComponentClass = Vue.extend(Bastard)
-          var left = eventBus.enemyPositionX(50) // random position
+          var ComponentClass = Vue.extend(Bastard);
+          var left = eventBus.enemyPositionX(50); // random position
           instance = new ComponentClass({
-            propsData: { left: left }
+            propsData: { left: left },
           });
-          instance.$mount()
-          collide = false
-          this.bastards.forEach(bastard => {
+          instance.$mount();
+          collide = false;
+          this.bastards.forEach((bastard) => {
             if (eventBus.doElsCollide(bastard, instance)) {
-              collide = true
+              collide = true;
             }
-          })
-        } while (collide)
-        this.$refs.container.appendChild(instance.$el)
-        this.pushBastard(instance)
+          });
+        } while (collide);
+        this.$refs.container.appendChild(instance.$el);
+        this.pushBastard(instance);
       }
       if (this.bastards.length < CONF.MAX_BASTARDS) {
-        setTimeout(this.addBastard, CONF.BASTARDS_INTERVAL)
+        setTimeout(this.addBastard, CONF.BASTARDS_INTERVAL);
       }
-    }
+    },
   },
   computed: {
-    ...mapGetters([
-      'life', 'status', 'isPlaying', 'bastards'
-    ]),
+    ...mapGetters(["life", "status", "isPlaying", "bastards"]),
     style() {
       return {
-        width: window.GAME_WIDTH + 'px',
-        height: window.innerHeight + 'px',
-        margin: '0 auto',
-        backgroundColor: 'grey'
-      }
-    }
-  }
+        width: window.GAME_WIDTH + "px",
+        height: window.innerHeight + "px",
+        margin: "0 auto",
+        backgroundColor: "grey",
+      };
+    },
+  },
 };
 </script>
 
-
 <style>
-html, body {
+html,
+body {
   width: 100%;
   height: 100%;
   margin: 0;

@@ -1,14 +1,14 @@
-import Vue from 'vue'
-import { store } from './store/store.js'
-import App from './App.vue'
+import Vue from "vue";
+import { store } from "./store/store.js";
+import App from "./App.vue";
 
 export const eventBus = new Vue({
   methods: {
     attack(damage, bullet) {
-      this.$emit('attack', damage, bullet);
+      this.$emit("attack", damage, bullet);
     },
     counterAttack(damage, bullet) {
-      this.$emit('counterAttack', damage, bullet);
+      this.$emit("counterAttack", damage, bullet);
     },
     doElsCollide(el1, el2) {
       el1.offsetTop = el1.top;
@@ -21,21 +21,23 @@ export const eventBus = new Vue({
       el2.offsetBottom = el2.offsetTop + el2.height;
       el2.offsetRight = el2.offsetLeft + el2.width;
 
-      return !((el1.offsetBottom < el2.offsetTop) ||
-               (el1.offsetTop > el2.offsetBottom) ||
-               (el1.offsetRight < el2.offsetLeft) ||
-               (el1.offsetLeft > el2.offsetRight))
+      return !(
+        el1.offsetBottom < el2.offsetTop ||
+        el1.offsetTop > el2.offsetBottom ||
+        el1.offsetRight < el2.offsetLeft ||
+        el1.offsetLeft > el2.offsetRight
+      );
     },
     enemyPositionX(enemyWidth) {
-      var x = Math.floor(Math.random() *
-        (window.GAME_WIDTH - enemyWidth - 1) ) + 1;
+      var x =
+        Math.floor(Math.random() * (window.GAME_WIDTH - enemyWidth - 1)) + 1;
       return x + window.GAME_OFFSET;
-    }
-  }
+    },
+  },
 });
 
 new Vue({
-  el: '#game',
+  el: "#game",
   store,
-  render: h => h(App)
+  render: (h) => h(App),
 });

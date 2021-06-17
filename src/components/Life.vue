@@ -8,45 +8,43 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters } from "vuex";
 
 export default {
   computed: {
-    ...mapGetters([
-      'life'
-    ]),
+    ...mapGetters(["life"]),
     lifebar() {
-      let color = 'green'
+      let color = "green";
       if (this.life < 75 && this.life >= 50) {
-        color = 'yellow'
+        color = "yellow";
       } else if (this.life < 50 && this.life >= 25) {
-        color = 'orange'
+        color = "orange";
       } else if (this.life < 25) {
-        color = 'red'
+        color = "red";
       }
       return {
         backgroundColor: color,
-        width: this.life + '%',
-        height: '100%'
-      }
-    }
-  }
+        width: this.life + "%",
+        height: "100%",
+      };
+    },
+  },
 };
 </script>
 
 <style scoped>
-  #status {
-    border: 1px solid black;
-    padding: 5px;
-    width: 150px;
-    height: 50px;
-    position: fixed;
-    right: 10px;
-    bottom: 10px;
-  }
-  #lifebar {
-    width: 100%;
-    width: 100%;
-    height: 30px;
-  }
+#status {
+  border: 1px solid black;
+  padding: 5px;
+  width: 150px;
+  height: 50px;
+  position: fixed;
+  right: 10px;
+  bottom: 10px;
+}
+#lifebar {
+  width: 100%;
+  width: 100%;
+  height: 30px;
+}
 </style>
