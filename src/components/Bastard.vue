@@ -16,7 +16,7 @@ import { eventBus } from "../main";
 import { mapGetters } from "vuex";
 
 export const CONF = Object.freeze({
-  WIDTH: 50,
+  WIDTH: 80,
   HEIGHT: 50,
   BULLET_SPEED: 990,
   BULLET_WIDTH: 4,

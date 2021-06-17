@@ -5,7 +5,8 @@
       v-for="bullet in bullets"
       v-bind:id="bullet.id"
       class="bullet"
-      :style="{ top: bullet.top + 'px', left: bullet.left + 'px' }"
+      :style="bulletStyle(bullet)"
+      :visible="!bullet.hit"
     >
     </span>
   </div>
@@ -81,6 +82,13 @@ export default {
     removeBullet: function(b) {
       let bulletIndex = this.bullets.map((b) => b.id).indexOf(b.id);
       this.bullets.splice(bulletIndex, 1);
+    },
+    bulletStyle(bullet) {
+      let css = { top: bullet.top + "px", left: bullet.left + "px" };
+      if (bullet.hit) {
+        css.display = "none";
+      }
+      return css;
     },
   },
   computed: {
