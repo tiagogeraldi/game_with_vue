@@ -8,11 +8,9 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-
 export default {
+  props: ["life"],
   computed: {
-    ...mapGetters(["life"]),
     lifebar() {
       let color = "green";
       if (this.life < 75 && this.life >= 50) {

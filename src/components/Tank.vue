@@ -14,15 +14,14 @@
 
 <script>
 import { eventBus } from "../main";
-import { mapGetters } from "vuex";
-import { mapMutations } from "vuex";
+import { mapGetters, mapMutations } from "vuex";
 
-var TANK_MOVEMENT = 10;
-var TANK_WIDTH = 50;
-var TANK_HEIGHT = 50;
-var BULLET_SPEED = 999;
-var BULLET_WIDTH = 3;
-var BULLET_HEIGHT = 3;
+const TANK_MOVEMENT = 10;
+const TANK_WIDTH = 50;
+const TANK_HEIGHT = 50;
+const BULLET_SPEED = 999;
+const BULLET_WIDTH = 3;
+const BULLET_HEIGHT = 3;
 
 export default {
   name: "tank",
@@ -37,7 +36,6 @@ export default {
   },
   methods: {
     ...mapMutations(["damage"]),
-    ...mapGetters(["isPlaying"]),
     moveRight: function() {
       if (this.left < window.GAME_OFFSET + window.GAME_WIDTH - TANK_WIDTH) {
         this.left += TANK_MOVEMENT;
@@ -62,11 +60,7 @@ export default {
     },
     fireBullet: function(bullet) {
       bullet.top -= BULLET_HEIGHT;
-      if (
-        this.isPlaying &&
-        bullet.top < window.innerHeight &&
-        bullet.hit === 0
-      ) {
+      if (this.isPlaying && bullet.top > 0 && bullet.hit === 0) {
         // global event of an attack.
         // All the enemies will catch this event to check a collison
         eventBus.attack(20, bullet);
@@ -92,7 +86,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(["life", "status"]),
+    ...mapGetters(["life", "status", "isPlaying"]),
     tankStyle() {
       return {
         left: this.left + "px",
@@ -105,6 +99,9 @@ export default {
   created() {
     // can't create this event with Vue, this is an event for the whole page.
     window.addEventListener("keydown", (event) => {
+      if (!this.isPlaying) {
+        return;
+      }
       if (event.code == "ArrowRight") {
         this.moveRight();
       } else if (event.code == "ArrowLeft") {
@@ -115,7 +112,7 @@ export default {
     });
 
     eventBus.$on("counterAttack", (damage, fireEl) => {
-      if (this.life > 0) {
+      if (this.life > 0 && this.isPlaying) {
         var collison = eventBus.doElsCollide(this, fireEl);
         if (collison === true) {
           fireEl.hit = 1;

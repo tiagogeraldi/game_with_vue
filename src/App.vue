@@ -2,7 +2,7 @@
   <div>
     <div v-if="status === 'playing'">
       <div ref="container" :style="style">
-        <app-life></app-life>
+        <app-life :life="life"></app-life>
         <app-tank></app-tank>
       </div>
     </div>
@@ -56,7 +56,7 @@ export default {
     this.addBastard();
   },
   methods: {
-    ...mapMutations(["gameover", "playing", "paused", "damage", "pushBastard"]),
+    ...mapMutations(["playing", "paused", "damage", "pushBastard"]),
     addBastard() {
       if (this.$refs.container && this.isPlaying) {
         // Do not allow a new bastard overlay
@@ -67,7 +67,7 @@ export default {
           var ComponentClass = Vue.extend(Bastard);
           var left = eventBus.enemyPositionX(50); // random position
           instance = new ComponentClass({
-            propsData: { left: left },
+            propsData: { left: left, status: this.status },
           });
           instance.$mount();
           collide = false;

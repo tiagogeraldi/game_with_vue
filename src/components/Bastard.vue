@@ -13,7 +13,6 @@
 
 <script>
 import { eventBus } from "../main";
-import { mapGetters } from "vuex";
 
 export const CONF = Object.freeze({
   WIDTH: 80,
@@ -27,7 +26,7 @@ export const CONF = Object.freeze({
 
 export default {
   name: "bastard",
-  props: ["left"],
+  props: ["left", "status"],
   data: function() {
     return {
       life: 100,
@@ -54,7 +53,6 @@ export default {
     this.move();
   },
   methods: {
-    ...mapGetters(["isPlaying"]),
     shoot() {
       this.bullets.push({
         top: this.top + this.height,
@@ -66,21 +64,24 @@ export default {
       });
       var lastBullet = this.bullets[this.bullets.length - 1];
       this.fireBullet(lastBullet);
-      if (this.life > 0 && this.isPlaying) {
+      if (this.life > 0 && this.status === "playing") {
         setTimeout(this.shoot, CONF.SHOOT_INTERVAL);
       }
     },
     fireBullet(bullet) {
       bullet.top += CONF.BULLET_HEIGHT;
       if (
-        this.isPlaying &&
+        this.status === "playing" &&
         this.life > 0 &&
         bullet.top < window.innerHeight &&
         bullet.hit === 0
       ) {
         // global event of an attack.
-        // Thank might catch this event
-        eventBus.counterAttack(20, bullet);
+        // Thank might catch this event.
+        if (bullet.top > window.innerHeight - 100) {
+          // checks counterAttack colision only the bullet is near of the Tank
+          eventBus.counterAttack(20, bullet);
+        }
 
         // move bullet
         setTimeout(() => {
@@ -97,7 +98,7 @@ export default {
     move() {
       this.top += 10;
       if (
-        this.isPlaying &&
+        this.status === "playing" &&
         this.life > 0 &&
         this.top + this.height < window.innerHeight
       ) {
@@ -108,7 +109,7 @@ export default {
     },
   },
   computed: {
-    style: function() {
+    style() {
       var backgroundColor = "black";
       if (this.life <= 30) {
         backgroundColor = "red";
@@ -123,7 +124,7 @@ export default {
         width: CONF.WIDTH + "px",
       };
     },
-    bulletStyle: function(bullet) {
+    bulletStyle(bullet) {
       return {
         top: bullet.top + "px",
         left: bullet.left + "px",

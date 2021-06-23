@@ -34,11 +34,11 @@ export const store = new Vuex.Store({
   mutations: {
     gameover: (state) => {
       state.status = "gameover";
-      state.life = 100;
       state.bastards = [];
     },
     playing: (state) => {
       state.status = "playing";
+      state.life = 100;
     },
     paused: (state) => {
       state.status = "paused";
