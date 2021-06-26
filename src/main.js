@@ -10,6 +10,10 @@ export const eventBus = new Vue({
     counterAttack(damage, bullet) {
       this.$emit("counterAttack", damage, bullet);
     },
+    // When a bastard moves down, checks if it crashes the Thank
+    tankCollision(bastard) {
+      this.$emit("tankCollision", bastard);
+    },
     doElsCollide(el1, el2) {
       el1.offsetTop = el1.top;
       el1.offsetLeft = el1.left;

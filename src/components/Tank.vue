@@ -35,7 +35,7 @@ export default {
     };
   },
   methods: {
-    ...mapMutations(["damage"]),
+    ...mapMutations(["damage", "gameover"]),
     moveRight: function() {
       if (this.left < window.GAME_OFFSET + window.GAME_WIDTH - TANK_WIDTH) {
         this.left += TANK_MOVEMENT;
@@ -118,6 +118,12 @@ export default {
           fireEl.hit = 1;
           this.damage(damage);
         }
+      }
+    });
+
+    eventBus.$on("tankCollision", (bastard) => {
+      if (eventBus.doElsCollide(this, bastard) === true) {
+        this.gameover();
       }
     });
   },

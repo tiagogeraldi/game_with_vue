@@ -102,6 +102,10 @@ export default {
         this.life > 0 &&
         this.top + this.height < window.innerHeight
       ) {
+        // when near of bottom line, check collision with Tank - then gameover
+        if (this.top > window.innerHeight - 100) {
+          eventBus.tankCollision(this);
+        }
         setTimeout(this.move, CONF.MOVE_INTERVAL);
       } else {
         this.$destroy();
