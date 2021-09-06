@@ -6,7 +6,7 @@ The green object on the bottom of the page is commanded by keys, it moves and fi
 
 The enemies appear on the top of the page, move down and fire back.
 
-![Alt text](https://github.com/tiagogeraldi/game_with_vue/blob/master/screenshot.pngg "Game screenshot")
+![Alt text](https://github.com/tiagogeraldi/game_with_vue/blob/master/screenshot.png "Game screenshot")
 
 ## Build Setup
 
