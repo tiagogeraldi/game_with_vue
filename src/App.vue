@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="text-align: center">
     <div v-if="status === 'playing'">
       <div ref="container" :style="style">
         <app-life :life="life"></app-life>
@@ -8,6 +8,14 @@
     </div>
     <div v-else-if="status === 'not-started'">
       <h3>Welcome!</h3>
+      <h5>Commands</h5>
+      A - Fire
+      <br/>
+      Arrows Left and Right - Move
+      <br/>
+      P - Pause
+      <br/>
+      <br/>
       <button type="button" @click="playing()">Start</button>
     </div>
     <div v-else-if="status === 'paused'">
@@ -29,7 +37,7 @@ import { eventBus } from "./main";
 import { mapGetters } from "vuex";
 import { mapMutations } from "vuex";
 
-window.GAME_WIDTH = 600;
+window.GAME_WIDTH = 400;
 window.GAME_OFFSET = (window.innerWidth - window.GAME_WIDTH) / 2;
 
 export const CONF = Object.freeze({

@@ -18,9 +18,9 @@ export const CONF = Object.freeze({
   WIDTH: 80,
   HEIGHT: 50,
   BULLET_SPEED: 990,
-  BULLET_WIDTH: 4,
-  BULLET_HEIGHT: 4,
-  SHOOT_INTERVAL: 900,
+  BULLET_WIDTH: 20,
+  BULLET_HEIGHT: 20,
+  SHOOT_INTERVAL: 1300,
   MOVE_INTERVAL: 500,
 });
 
@@ -69,7 +69,7 @@ export default {
       }
     },
     fireBullet(bullet) {
-      bullet.top += CONF.BULLET_HEIGHT;
+      bullet.top += CONF.BULLET_HEIGHT / 2;
       if (
         this.status === "playing" &&
         this.life > 0 &&
@@ -80,7 +80,7 @@ export default {
         // Thank might catch this event.
         if (bullet.top > window.innerHeight - 100) {
           // checks counterAttack colision only the bullet is near of the Tank
-          eventBus.counterAttack(20, bullet);
+          eventBus.counterAttack(10, bullet);
         }
 
         // move bullet
@@ -152,8 +152,8 @@ div div {
 }
 
 .bullet {
-  width: 4px;
-  height: 4px;
+  width: 20px;
+  height: 20px;
   background-color: red;
   position: fixed;
 }

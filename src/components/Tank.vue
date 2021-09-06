@@ -20,8 +20,8 @@ const TANK_MOVEMENT = 10;
 const TANK_WIDTH = 50;
 const TANK_HEIGHT = 50;
 const BULLET_SPEED = 999;
-const BULLET_WIDTH = 3;
-const BULLET_HEIGHT = 3;
+const BULLET_WIDTH = 10;
+const BULLET_HEIGHT = 10;
 
 export default {
   name: "tank",
@@ -78,7 +78,12 @@ export default {
       this.bullets.splice(bulletIndex, 1);
     },
     bulletStyle(bullet) {
-      let css = { top: bullet.top + "px", left: bullet.left + "px" };
+      let css = {
+        top: bullet.top + "px",
+        left: bullet.left + "px",
+        width: BULLET_WIDTH + "px",
+        height: BULLET_HEIGHT + "px",
+      };
       if (bullet.hit) {
         css.display = "none";
       }
@@ -117,6 +122,24 @@ export default {
         if (collison === true) {
           fireEl.hit = 1;
           this.damage(damage);
+
+
+          var el1 = this
+          var el2 = fireEl
+          el1.offsetTop = el1.top;
+          el1.offsetLeft = el1.left;
+          el1.offsetBottom = el1.offsetTop + el1.height;
+          el1.offsetRight = el1.offsetLeft + el1.width;
+
+          el2.offsetTop = el2.top + el2.height;
+          el2.offsetLeft = el2.left + el2.width;
+          el2.offsetBottom = el2.offsetTop + el2.height;
+          el2.offsetRight = el2.offsetLeft + el2.width;
+
+          console.log(el1.offsetBottom < el2.offsetTop)
+          console.log(el1.offsetTop > el2.offsetBottom)
+          console.log(el1.offsetRight < el2.offsetLeft)
+          console.log(el1.offsetLeft > el2.offsetRight)
         }
       }
     });
@@ -137,8 +160,6 @@ export default {
 }
 
 .bullet {
-  width: 3px;
-  height: 3px;
   background-color: black;
   position: fixed;
 }
