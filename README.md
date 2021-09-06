@@ -1,6 +1,12 @@
-# tanks
+# An example of game using Vue
 
-> A Game
+An experiment of JS code that moves objects across the screen and checks collisions.
+
+The green object on the bottom of the page is commanded by keys, it moves and fires.
+
+The enemies appear on the top of the page, move down and fire back.
+
+![Alt text](https://github.com/tiagogeraldi/game_with_vue/blob/master/screenshot.pngg "Game screenshot")
 
 ## Build Setup
 
